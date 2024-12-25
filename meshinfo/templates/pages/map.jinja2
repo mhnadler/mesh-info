@@ -67,6 +67,9 @@
             });
           }
         }).addTo(map);
+        if (! nodeLayer.active) {
+          mapLayer.removeFrom(map);
+        }
         layerControl.addOverlay(mapLayer, nodeLayer.description);
         nodeLayers[nodeLayer.variable] = mapLayer;
       }

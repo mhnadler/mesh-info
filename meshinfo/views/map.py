@@ -29,6 +29,7 @@ class NodeLayer:
     description: str
     band: Band
     icon: str
+    active: bool = True
     features: list[GeoNode] = attrs.field(factory=list, init=False)
 
     def __json__(self, request: Request) -> dict:
@@ -37,6 +38,7 @@ class NodeLayer:
             "description": self.description,
             "band": self.band.value,
             "icon": request.static_url(f"meshinfo:static/img/map/{self.icon}"),
+            "active": self.active,
             "geoJSON": {"type": "FeatureCollection", "features": self.features},
         }
 
@@ -60,28 +62,29 @@ class LinkLayer:
 
 # map legend uses the order of the bands here
 _NODE_LAYERS = (
-    NodeLayer("fiveGHzNodes", "5 GHz Nodes", Band.FIVE_GHZ, "gold-radio-small.png"),
-    NodeLayer("threeGHzNodes", "3 GHz Nodes", Band.THREE_GHZ, "blue-radio-small.png"),
-    NodeLayer("twoGHzNodes", "2 GHz Nodes", Band.TWO_GHZ, "purple-radio-small.png"),
+    NodeLayer("fiveGHzNodes", "5 GHz Nodes", Band.FIVE_GHZ, "gold-radio-small.png", active=False),
+    NodeLayer("threeGHzNodes", "3 GHz Nodes", Band.THREE_GHZ, "blue-radio-small.png", active=False),
+    NodeLayer("twoGHzNodes", "2 GHz Nodes", Band.TWO_GHZ, "purple-radio-small.png", active=False),
     NodeLayer(
         "nineHundredMHzNodes",
         "900 MHz Nodes",
         Band.NINE_HUNDRED_MHZ,
         "magenta-radio-small.png",
+        active=False,
     ),
     NodeLayer("noRFNodes", "No RF Nodes", Band.OFF, "grey-radio-small.png"),
     # TODO: use a red icon
-    NodeLayer("unknownNodes", "Unknown Nodes", Band.UNKNOWN, "red-radio-small.png"),
+    NodeLayer("unknownNodes", "Unknown Nodes", Band.UNKNOWN, "red-radio-small.png", active=False),
 )
 
 _NODE_BAND_LAYER_MAP = {layer.band: layer for layer in _NODE_LAYERS}
 
 _LINK_LAYERS = (
     LinkLayer("rfLinks", "Radio Links", LinkType.RF),
-    LinkLayer("dtdLinks", "DTD Links", LinkType.DTD),
-    LinkLayer("wireguardLinks", "Wireguard Links", LinkType.WIREGUARD),
-    LinkLayer("tunnelLinks", "Tunnel Links", LinkType.TUN),
-    LinkLayer("unknownLinks", "Unknown Links", LinkType.UNKNOWN),
+    LinkLayer("dtdLinks", "DTD Links", LinkType.DTD, active=False),
+    LinkLayer("wireguardLinks", "Wireguard Links", LinkType.WIREGUARD, active=False),
+    LinkLayer("tunnelLinks", "Tunnel Links", LinkType.TUN, active=False),
+    LinkLayer("unknownLinks", "Unknown Links", LinkType.UNKNOWN, active=False),
     LinkLayer("recentLinks", "Recent Links", LinkStatus.RECENT, active=False),
 )
 
